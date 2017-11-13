@@ -34,11 +34,12 @@ module.exports = class AuthController extends BaseController {
 
   checkLogin() {
     return async (ctx) => {
-      let user = this.getSessionUser(ctx.session);
-      let data = {};
+      let userInfo = this.getSessionUser(ctx.session);
       // session的id一般只有在使用缓存层的时候会用到
-      data.isLogin = !!user;
-      this.wrapResult(ctx, {data: data});
+      this.wrapResult(ctx, {data: {
+        isLogin: !!userInfo,
+        ...userInfo
+      }});
     }
   }
 

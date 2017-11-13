@@ -22,9 +22,11 @@
     "koa-router": "^7.2.1",
     "log4js": "^2.3.10",
     "moment": "^2.19.1",
-    "mysql": "^2.15.0"
+    "mysql": "^2.15.0",
+    "ws": "^3.2.0"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.12.1",
+    "pm2": "^2.7.2"
   }
 }

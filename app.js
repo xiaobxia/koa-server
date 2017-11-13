@@ -1,16 +1,18 @@
 const Koa = require('koa');
-const app = new Koa();
+const http = require('http');
+const WebSocket = require('ws');
 const bodyParser = require('koa-bodyparser');
 const session = require('koa-session');
 const router = require('./app/routes/index');
 const log = require('./app/common/logger');
 const config = require('./config/index');
 
+const app = new Koa();
 const session_secret = config.server.session_secret;
 app.keys = [session_secret];
 const CONFIG = {
   key: session_secret,
-  maxAge: 1000*5,
+  maxAge: 1000 * 60 * 20,
   overwrite: true,
   httpOnly: true,
   signed: true,
@@ -30,8 +32,34 @@ app.on('error', err => {
   log.error(err)
 });
 
+//socket
+const server = http.createServer(app.callback());
+const wss = new WebSocket.Server({server});
+
+wss.on('connection', function connection(ws, req) { //node的req
+  console.log('on connection');
+  // You might use location.query.access_token to authenticate or share sessions
+  // or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
+
+  ws.on('message', function incoming(message) {
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+    console.log('received: %s', message);
+  });
+  ws.on('error', function (error) {
+    console.log('one error')
+  });
+
+  ws.on('close', function (closeEvent) {
+    console.log('one close')
+  });
+});
+
 //监听
-app.listen(port, function (err) {
+server.listen(port, function (err) {
   if (err) {
     console.log(err);
     return;
