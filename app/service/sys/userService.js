@@ -10,6 +10,6 @@ module.exports = class UserService extends BaseService {
   }
 
   async register(userInfo) {
-    console.log(this.connection === null)
+    const userORM = this.ORMs.userORM(this.connection);
   }
 };

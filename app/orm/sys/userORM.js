@@ -6,8 +6,13 @@ module.exports = class UserORM extends BaseORM {
   constructor(connection) {
     super(connection);
     this.defaultTable = 'sys_user';
-    this.defaultSelect = ['*'];
-    this.defaultWhere = {state: 'A'}
+    this.defaultSelect = ['user_id', 'user_name', 'user_code'];
+  }
+
+  addUser(userInfo) {
+    return this.insert({
+      data: userInfo
+    });
   }
 
   getUserByUserCode(userCode) {
