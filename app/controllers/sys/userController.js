@@ -8,26 +8,26 @@ module.exports = class UserController extends BaseController {
     return async (ctx) => {
       const query = ctx.request.body;
       const data = {
-        userCode: query.userCode,
+        userName: query.userName,
         email: query.email,
-        pwd: query.pwd
+        password: query.password
       };
       this.validate(ctx, {
-        userCode: {type: 'string', required: true},
+        userName: {type: 'string', required: true},
         email: {type: 'string', required: true},
-        pwd: {type: 'string', required: true}
+        password: {type: 'string', required: true}
       }, data);
       let connection = null;
       try {
         connection = await this.mysqlGetConnection();
         const userService = this.services.userService(connection);
         let user = await userService.register(data);
-        this.wrapResult(ctx, {data: 'l'});
+        this.wrapResult(ctx, {data: {success: true}});
         this.mysqlRelease(connection);
       } catch (error) {
         this.mysqlRelease(connection);
         if (error.type) {
-          this.wrapResult(ctx, {data: {msg: error.message, login: false}});
+          this.wrapResult(ctx, {data: {msg: error.message, success: false}});
         } else {
           throw error;
         }

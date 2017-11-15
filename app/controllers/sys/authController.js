@@ -6,17 +6,17 @@ module.exports = class AuthController extends BaseController {
       const query = ctx.request.body;
       const data = {
         account: query.account,
-        pwd: query.pwd
+        password: query.password
       };
       this.validate(ctx, {
         account: {type: 'string', required: true},
-        pwd: {type: 'string', required: true}
+        password: {type: 'string', required: true}
       }, data);
       let connection = null;
       try {
         connection = await this.mysqlGetConnection();
         const authService = this.services.authService(connection);
-        let user = await authService.login(data.account, data.pwd);
+        let user = await authService.login(data.account, data.password);
         let userInfo = {userId: user.userId, userName: user.userName};
         this.setSessionUser(ctx.session, userInfo);
         this.wrapResult(ctx, {data: {login: true, ...userInfo}});

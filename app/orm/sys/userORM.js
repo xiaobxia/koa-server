@@ -6,12 +6,13 @@ module.exports = class UserORM extends BaseORM {
   constructor(connection) {
     super(connection);
     this.defaultTable = 'sys_user';
-    this.defaultSelect = ['user_id', 'user_name', 'user_code'];
+    this.defaultSelect = ['user_id', 'user_name'];
   }
 
-  addUser(userInfo) {
-    return this.insert({
-      data: userInfo
+  getAllUserRawByAccount(account) {
+    return this.query({
+      sql: `SELECT * FROM ${this.defaultTable} WHERE email=? OR mobile=? OR user_name=?`,
+      values: [account, account, account]
     });
   }
 
@@ -22,12 +23,60 @@ module.exports = class UserORM extends BaseORM {
     });
   }
 
+  getAllUserByUserId(userId) {
+    return this.select({
+      where: {
+        userId
+      }
+    });
+  }
+
   getUserByUserId(userId) {
     return this.select({
       where: {
         state: 'A',
         userId
       }
+    });
+  }
+
+  getAllUserByUserName(userName) {
+    return this.select({
+      where: {
+        userName
+      }
+    });
+  }
+
+  getUserByUserName(userName) {
+    return this.select({
+      where: {
+        state: 'A',
+        userName
+      }
+    });
+  }
+
+  getAllUserByEmail(email) {
+    return this.select({
+      where: {
+        email
+      }
+    });
+  }
+
+  getUserByEmail(email) {
+    return this.select({
+      where: {
+        state: 'A',
+        email
+      }
+    });
+  }
+
+  addUser(userInfo) {
+    return this.insert({
+      data: userInfo
     });
   }
 

@@ -14,6 +14,8 @@ const router = new Router({
 router.post('/sys/login', controllers.authController.login());
 router.get('/sys/checkLogin', controllers.authController.checkLogin());
 router.get('/sys/logout', controllers.authController.logout());
+//注册
+router.post('/sys/register', controllers.userController.register());
 
 
 module.exports = router;

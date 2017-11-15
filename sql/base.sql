@@ -25,7 +25,7 @@ CREATE TABLE sys_user
 (
    user_id              INT(11) NOT NULL AUTO_INCREMENT,
    user_name            VARCHAR(60) NOT NULL COMMENT '登陆账户名',
-   pwd                  VARCHAR(60) NOT NULL COMMENT '登陆账户密码',
+   password             VARCHAR(60) NOT NULL COMMENT '登陆账户密码',
    mobile               VARCHAR(20),
    email                VARCHAR(50),
    create_date          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -48,8 +48,10 @@ CREATE TABLE sys_email_verify
    id                   BIGINT(9) NOT NULL AUTO_INCREMENT,
    user_name            VARCHAR(60) NOT NULL COMMENT '用户设置的用户名',
    email                VARCHAR(50) NOT NULL COMMENT '用户设置的邮箱地址',
-   pwd                  VARCHAR(60) NOT NULL COMMENT '用户设置的密码',
+   password             VARCHAR(60) NOT NULL COMMENT '用户设置的密码',
+   verify_code          CHAR(32) NOT NULL COMMENT '用户的验证码',
    verify_status        INT(1) NOT NULL COMMENT '验证状态，1：邮件已发送，2：邮件验证成功，2：邮件验证失败',
+   update_date          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
    create_date          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (id)
 )

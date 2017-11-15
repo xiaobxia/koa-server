@@ -33,7 +33,7 @@ module.exports = class LoginService extends BaseService {
         this.throwError(this.localConst.errorMessage.LOCK_USER);
       }
     }
-    if (user['pwd'] === password) {
+    if (user['password'] === password) {
       //清空尝试，之前没锁定并且失败数不为0
       if (!isLockBefore && user['loginFail'] !==0) {
         await userORM.updateUserByUserId(user['userId'], {
