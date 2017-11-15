@@ -5,19 +5,19 @@ module.exports = class AuthController extends BaseController {
     return async (ctx) => {
       const query = ctx.request.body;
       const data = {
-        userCode: query.userCode,
+        account: query.account,
         pwd: query.pwd
       };
       this.validate(ctx, {
-        userCode: {type: 'string', required: true},
+        account: {type: 'string', required: true},
         pwd: {type: 'string', required: true}
       }, data);
       let connection = null;
       try {
         connection = await this.mysqlGetConnection();
         const authService = this.services.authService(connection);
-        let user = await authService.login(data.userCode, data.pwd);
-        let userInfo = {userId: user.userId, userCode: user.userCode, userName: user.userName};
+        let user = await authService.login(data.account, data.pwd);
+        let userInfo = {userId: user.userId, userName: user.userName};
         this.setSessionUser(ctx.session, userInfo);
         this.wrapResult(ctx, {data: {login: true, ...userInfo}});
         this.mysqlRelease(connection);

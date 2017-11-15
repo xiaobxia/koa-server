@@ -15,29 +15,19 @@ module.exports = class UserORM extends BaseORM {
     });
   }
 
-  getUserByUserCode(userCode) {
-    return this.select({
-      where: {
-        userCode,
-        state: 'A'
-      }
-    });
-  }
-
-  getUserRawByUserCode(userCode) {
-    return this.select({
-      select: ['*'],
-      where: {
-        userCode,
-        state: 'A'
-      }
+  getUserRawByAccount(account) {
+    return this.query({
+      sql: `SELECT * FROM ${this.defaultTable} WHERE state="A" AND (email=? OR mobile=? OR user_name=?)`,
+      values: [account, account, account]
     });
   }
 
   getUserByUserId(userId) {
     return this.select({
-      'state': 'A',
-      userId
+      where: {
+        state: 'A',
+        userId
+      }
     });
   }
 

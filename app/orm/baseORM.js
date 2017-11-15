@@ -8,6 +8,7 @@ module.exports = class BaseORM extends BaseModel {
     this.defaultTable = 'table';
     this.defaultSelect = ['*'];
     this.defaultWhere = {};
+    this.defaultWhereType = 'AND';
   }
 
   tranceSql(sql) {
@@ -93,7 +94,7 @@ module.exports = class BaseORM extends BaseModel {
     return tempItem;
   }
 
-  formatWhere(sql, where) {
+  formatWhere(sql, where, whereType) {
     let values = [];
     let str = '';
     for (let key in where) {
@@ -102,7 +103,7 @@ module.exports = class BaseORM extends BaseModel {
         if (str === '') {
           str += 'WHERE ??=?';
         } else {
-          str += ' AND ??=?';
+          str += ` ${whereType} ??=?`;
         }
       }
     }
@@ -116,8 +117,9 @@ module.exports = class BaseORM extends BaseModel {
     let _option = option || {};
     let _select = _option.select || this.defaultSelect;
     let _where = _option.where || this.defaultWhere;
+    let _whereType = _option.whereType || this.defaultWhereType;
     let _table = _option.table || this.defaultTable;
-    let queryObj = this.formatWhere(`SELECT ?? FROM ${_table} {WHERE}`, _where);
+    let queryObj = this.formatWhere(`SELECT ?? FROM ${_table} {WHERE}`, _where, _whereType);
     return this.query({
       sql: queryObj.sql,
       values: [_select, ...queryObj.values]
@@ -128,8 +130,9 @@ module.exports = class BaseORM extends BaseModel {
   count(option) {
     let _option = option || {};
     let _where = _option.where || this.defaultWhere || {};
+    let _whereType = _option.whereType || this.defaultWhereType;
     let _table = _option.table || this.defaultTable;
-    let queryObj = this.formatWhere(`SELECT COUNT(*) AS count FROM ${_table} {WHERE}`, _where);
+    let queryObj = this.formatWhere(`SELECT COUNT(*) AS count FROM ${_table} {WHERE}`, _where, _whereType);
     return this.query({
       sql: queryObj.sql,
       values: queryObj.values
@@ -139,10 +142,11 @@ module.exports = class BaseORM extends BaseModel {
   update(option) {
     let _option = option || {};
     let _data = _option.data || {};
+    let _whereType = _option.whereType || this.defaultWhereType;
     let _where = _option.where || this.defaultWhere;
     let _table = _option.table || this.defaultTable;
     _data = this.keyToHyphen(_data);
-    let queryObj = this.formatWhere(`UPDATE ${_table} SET ? {WHERE}`, _where);
+    let queryObj = this.formatWhere(`UPDATE ${_table} SET ? {WHERE}`, _where, _whereType);
     return this.query({
       sql: queryObj.sql,
       values: [_data, ...queryObj.values]

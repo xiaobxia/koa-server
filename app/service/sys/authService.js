@@ -7,12 +7,17 @@ module.exports = class LoginService extends BaseService {
     super(connection);
   }
 
-  async login(userCode, password) {
+  async login(account, password) {
     const userORM = this.ORMs.userORM(this.connection);
-    let dbResult = await userORM.getUserRawByUserCode(userCode);
-    this.checkDBResult(dbResult, this.localConst.errorMessage.USER_NAME_OR_PWD_ERROR);
+    let dbResult = await userORM.getUserRawByAccount(account);
+    this.checkDBResult(dbResult, this.localConst.errorMessage.ACCOUNT_OR_PWD_ERROR);
     let user = dbResult[0];
+    const isForceLogin = user['forceLogin'] === 'Y';
     let isLockBefore = user['isLocked'] === 'Y';
+    //强制登录
+    if(isForceLogin) {
+      return user;
+    }
     if (isLockBefore) {
       //判断解锁
       if (moment().isAfter(user['unlockDate'])) {
@@ -41,7 +46,6 @@ module.exports = class LoginService extends BaseService {
       await logAuditORM.addLog({
         logType: 'login',
         userId: user['userId'],
-        userCode: user['userCode'],
         userName: user['userName']
       });
       return user;
@@ -60,7 +64,7 @@ module.exports = class LoginService extends BaseService {
         };
       }
       await userORM.updateUserByUserId(user['userId'], updateData);
-      this.throwError(this.localConst.errorMessage.USER_NAME_OR_PWD_ERROR);
+      this.throwError(this.localConst.errorMessage.ACCOUNT_OR_PWD_ERROR);
     }
   }
 
