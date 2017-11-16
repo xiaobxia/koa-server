@@ -10,7 +10,7 @@ const registerVerifyTemplate = (option) => {
     //标题
     subject: '注册验证邮箱',
     //html
-    html: `<div><p>如果链接无法跳转，请复制以下链接地址至浏览器中打开</p><a href="http://www.xiaobxia.com?code=${option.verifyCode}">http://www.xiaobxia.com?code=${option.verifyCode}</a></div>`
+    html: `<div><p>如果链接无法跳转，请复制以下链接地址至浏览器中打开</p><a href="${option.address}?code=${option.verifyCode}">${option.address}?code=${option.verifyCode}</a></div>`
   }
 };
 

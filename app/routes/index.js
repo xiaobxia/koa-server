@@ -15,6 +15,8 @@ router.post('/sys/login', controllers.authController.login());
 router.get('/sys/checkLogin', controllers.authController.checkLogin());
 router.get('/sys/logout', controllers.authController.logout());
 //注册
+router.get('/sys/register/active', controllers.userController.registerActive());
+router.get('/sys/register/result', controllers.userController.registerResult());
 router.post('/sys/register', controllers.userController.register());
 
 

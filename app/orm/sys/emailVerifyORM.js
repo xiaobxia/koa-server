@@ -14,6 +14,15 @@ module.exports = class EmailVerifyORM extends BaseORM {
     });
   }
 
+  updateRecordByVerifyCode(verifyCode, data) {
+    return this.update({
+      data: data,
+      where: {
+        verifyCode
+      }
+    });
+  }
+
   updateRecordByEmail(email, data) {
     return this.update({
       data: data,
@@ -27,6 +36,14 @@ module.exports = class EmailVerifyORM extends BaseORM {
     return this.select({
       where: {
         email,
+      }
+    });
+  }
+
+  getRecordByVerifyCode(verifyCode) {
+    return this.select({
+      where: {
+        verifyCode
       }
     });
   }

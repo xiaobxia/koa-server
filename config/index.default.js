@@ -5,7 +5,8 @@ const path = require('path');
 module.exports = {
   project: {
     //务必修改
-    projectName: ""
+    projectName: "",
+    remoteAddress: 'http://localhost:4000/#'
   },
   server: {
     //默认

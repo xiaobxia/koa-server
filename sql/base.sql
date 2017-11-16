@@ -28,14 +28,16 @@ CREATE TABLE sys_user
    password             VARCHAR(60) NOT NULL COMMENT '登陆账户密码',
    mobile               VARCHAR(20),
    email                VARCHAR(50),
-   create_date          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-   update_date          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   active               CHAR(1) NOT NULL DEFAULT 'N' COMMENT '是否已激活账户，Y已激活，N未激活',
+   active_date          DATETIME COMMENT '激活的日期',
    state                CHAR(1) NOT NULL DEFAULT 'A' COMMENT 'A-在用，X-失效',
-   state_date           DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+   state_date           DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '状态变更的日期',
    is_locked            CHAR(1) NOT NULL DEFAULT 'N' COMMENT '是否锁定，''Y''-锁定，''N''-没有锁定，null表示''N''',
    force_login          CHAR(1) NOT NULL DEFAULT 'N' COMMENT 'Y允许强制登录，N不允许。默认N',
    login_fail           INT(1) NOT NULL DEFAULT 0 COMMENT '登录失败次数，空表示0',
    unlock_date          DATETIME,
+   create_date          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   update_date          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (user_id)
 )
 AUTO_INCREMENT=1001 DEFAULT CHARSET=UTF8;

@@ -8,9 +8,10 @@ module.exports = class LoginService extends BaseService {
   }
 
   async login(account, password) {
+    const errorMessage = this.localConst.errorMessage;
     const userORM = this.ORMs.userORM(this.connection);
     let dbResult = await userORM.getUserRawByAccount(account);
-    this.checkDBResult(dbResult, this.localConst.errorMessage.ACCOUNT_OR_PWD_ERROR);
+    this.checkDBResult(dbResult, errorMessage.ACCOUNT_OR_PWD_ERROR);
     let user = dbResult[0];
     const isForceLogin = user['forceLogin'] === 'Y';
     let isLockBefore = user['isLocked'] === 'Y';
@@ -18,8 +19,13 @@ module.exports = class LoginService extends BaseService {
     if(isForceLogin) {
       return user;
     }
+    //账户未激活
+    //TODO 可登录但是提示去激活
+    if(user.active === 'N') {
+      this.throwError(errorMessage.LOCK_USER);
+    }
+    //判断解锁
     if (isLockBefore) {
-      //判断解锁
       if (moment().isAfter(user['unlockDate'])) {
         await userORM.updateUserByUserId(user['userId'], {
           loginFail: 0,
@@ -30,9 +36,10 @@ module.exports = class LoginService extends BaseService {
         dbResult = await userORM.getUserByUserId(user['userId']);
         user = dbResult[0];
       } else {
-        this.throwError(this.localConst.errorMessage.LOCK_USER);
+        this.throwError(errorMessage.LOCK_USER);
       }
     }
+    //验证密码
     if (user['password'] === password) {
       //清空尝试，之前没锁定并且失败数不为0
       if (!isLockBefore && user['loginFail'] !==0) {
@@ -64,7 +71,7 @@ module.exports = class LoginService extends BaseService {
         };
       }
       await userORM.updateUserByUserId(user['userId'], updateData);
-      this.throwError(this.localConst.errorMessage.ACCOUNT_OR_PWD_ERROR);
+      this.throwError(errorMessage.ACCOUNT_OR_PWD_ERROR);
     }
   }
 
