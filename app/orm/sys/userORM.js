@@ -11,14 +11,14 @@ module.exports = class UserORM extends BaseORM {
 
   getAllUserRawByAccount(account) {
     return this.query({
-      sql: `SELECT * FROM ${this.defaultTable} WHERE active="Y" AND (email=? OR mobile=? OR user_name=?)`,
+      sql: `SELECT * FROM ${this.defaultTable} WHERE (email=? OR mobile=? OR user_name=?)`,
       values: [account, account, account]
     });
   }
 
   getUserRawByAccount(account) {
     return this.query({
-      sql: `SELECT * FROM ${this.defaultTable} WHERE state="A" AND active="Y" AND (email=? OR mobile=? OR user_name=?)`,
+      sql: `SELECT * FROM ${this.defaultTable} WHERE state="A" AND (email=? OR mobile=? OR user_name=?)`,
       values: [account, account, account]
     });
   }

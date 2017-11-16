@@ -19,11 +19,6 @@ module.exports = class LoginService extends BaseService {
     if(isForceLogin) {
       return user;
     }
-    //账户未激活
-    //TODO 可登录但是提示去激活
-    if(user.active === 'N') {
-      this.throwError(errorMessage.LOCK_USER);
-    }
     //判断解锁
     if (isLockBefore) {
       if (moment().isAfter(user['unlockDate'])) {

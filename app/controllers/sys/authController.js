@@ -17,7 +17,7 @@ module.exports = class AuthController extends BaseController {
         connection = await this.mysqlGetConnection();
         const authService = this.services.authService(connection);
         let user = await authService.login(data.account, data.password);
-        let userInfo = {userId: user.userId, userName: user.userName};
+        let userInfo = {userId: user.userId, userName: user.userName, active: user.active};
         this.setSessionUser(ctx.session, userInfo);
         this.wrapResult(ctx, {data: {login: true, ...userInfo}});
         this.mysqlRelease(connection);
@@ -45,7 +45,11 @@ module.exports = class AuthController extends BaseController {
 
   logout() {
     return async (ctx) => {
-      let userInfo = this.getSessionUser(ctx.session);
+      const userInfoRaw = this.getSessionUser(ctx.session);
+      const userInfo = {
+        userId: userInfoRaw.userId,
+        userName: userInfoRaw.userName
+      };
       if (userInfo) {
         let connection = null;
         try {
