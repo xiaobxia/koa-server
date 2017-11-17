@@ -97,7 +97,11 @@ module.exports = class UserService extends BaseService {
     this.checkDBResult(emailRecord, errorMessage.NO_EMAIL_RECORD);
     //发送状态异常
     if(emailRecord[0].verifyStatus !== 1) {
-      this.throwError(errorMessage.EMAIL_OVERDUE)
+      this.throwError(errorMessage.EMAIL_OVERDUE);
+    }
+    //邮件过期
+    if(moment(emailRecord[0].updateDate).add(1, 'days').isAfter(moment())) {
+      this.throwError(errorMessage.EMAIL_OVERDUE);
     }
     //激活用户
     const nowTime = moment().format('YYYY-M-D HH:mm:ss');
