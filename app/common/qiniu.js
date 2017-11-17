@@ -1,6 +1,4 @@
 const qiniu = require("qiniu");
-const logger = require('./logger');
-const globalQiniuConfig = require('../../config/index').qiniu;
 /**
  * @param config
  * accessKey
@@ -13,9 +11,9 @@ const globalQiniuConfig = require('../../config/index').qiniu;
  */
 exports.getUploadToken = function (config) {
   //1.创建鉴权对象
-  let mac = new qiniu.auth.digest.Mac(config.accessKey, config.secretKey);
+  const mac = new qiniu.auth.digest.Mac(config.accessKey, config.secretKey);
   //2.创建上传凭证
-  let options = {
+  const options = {
     //空间名
     scope: config.bucketCode + ':' + config.fileName,
     expires: 600,
@@ -23,8 +21,8 @@ exports.getUploadToken = function (config) {
     // callbackBody: '{"key":"$(key)","hash":"$(etag)","bucket":"$(bucket)","fname":"$(fname)","fsize":"$(fsize)","mimeType":"$(mimeType)"}',
     // callbackBodyType: 'application/json'
   };
-  let putPolicy = new qiniu.rs.PutPolicy(options);
-  let uploadToken = putPolicy.uploadToken(mac);
+  const putPolicy = new qiniu.rs.PutPolicy(options);
+  const uploadToken = putPolicy.uploadToken(mac);
   return {
     token: uploadToken,
     bucketHost: config.bucketHost,
@@ -42,9 +40,9 @@ exports.getUploadToken = function (config) {
  * @returns {*}
  */
 exports.getPrivateDownloadUrl = function (config) {
-  let mac = new qiniu.auth.digest.Mac(config.accessKey, config.secretKey);
-  let qiniuConfig = new qiniu.conf.Config();
-  let bucketManager = new qiniu.rs.BucketManager(mac, qiniuConfig);
+  const mac = new qiniu.auth.digest.Mac(config.accessKey, config.secretKey);
+  const qiniuConfig = new qiniu.conf.Config();
+  const bucketManager = new qiniu.rs.BucketManager(mac, qiniuConfig);
   //deadline 过期的时间戳
   return bucketManager.privateDownloadUrl(config.bucketDomain, config.fileName, config.deadline);
 };
@@ -58,9 +56,9 @@ exports.getPrivateDownloadUrl = function (config) {
  * @returns {*}
  */
 exports.getPublicDownloadUrl = function (config) {
-  let mac = new qiniu.auth.digest.Mac(config.accessKey, config.secretKey);
-  let qiniuConfig = new qiniu.conf.Config();
-  let bucketManager = new qiniu.rs.BucketManager(mac, qiniuConfig);
+  const mac = new qiniu.auth.digest.Mac(config.accessKey, config.secretKey);
+  const qiniuConfig = new qiniu.conf.Config();
+  const bucketManager = new qiniu.rs.BucketManager(mac, qiniuConfig);
   return bucketManager.publicDownloadUrl(config.bucketDomain, config.fileName);
 };
 /**
@@ -69,26 +67,25 @@ exports.getPublicDownloadUrl = function (config) {
  * secretKey
  * bucketCode
  * fileName
+ * zone
  *
  * @returns {Promise}
  */
 //返回的是promise
-exports.deleteFile = function (config) {
+exports.deconsteFile = function (config) {
   //1.创建鉴权对象
-  let mac = new qiniu.auth.digest.Mac(config.accessKey, config.secretKey);
+  const mac = new qiniu.auth.digest.Mac(config.accessKey, config.secretKey);
   //bucket管理对象
-  let bucketConfig = new qiniu.conf.Config();
-  //华南
-  bucketConfig.zone = qiniu.zone[globalQiniuConfig.zone];
-  let bucketManager = new qiniu.rs.BucketManager(mac, bucketConfig);
+  const bucketConfig = new qiniu.conf.Config();
+  //地区
+  bucketConfig.zone = qiniu.zone[config.zone];
+  const bucketManager = new qiniu.rs.BucketManager(mac, bucketConfig);
   return new Promise(function (resolve, reject) {
-    bucketManager.delete(config.bucketCode, config.fileName, function (err, respBody, respInfo) {
+    bucketManager.deconste(config.bucketCode, config.fileName, function (err, respBody, respInfo) {
       if (err) {
-        logger.error(err);
         reject(err);
       } else {
         //成功时返回200
-        //TODO 以后可以做七牛的日志统计
         if (+respInfo.statusCode === 200) {
           resolve();
         } else {
@@ -96,9 +93,8 @@ exports.deleteFile = function (config) {
           if (respInfo.data && respInfo.data.error) {
             error = new Error(respInfo.data.error);
           } else {
-            error = new Error(new Error('qiniu error'));
+            error = new Error('qiniu error');
           }
-          logger.error(error);
           reject(error);
         }
       }
