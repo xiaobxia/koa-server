@@ -11,13 +11,13 @@ const router = new Router({
   prefix: `/${projectName}`
 });
 //登录
-router.post('/sys/login', controllers.authController.login());
-router.get('/sys/checkLogin', controllers.authController.checkLogin());
-router.get('/sys/logout', controllers.authController.logout());
+router.post('/sys/auth/login', controllers.authController.login());
+router.get('/sys/auth/checkLogin', controllers.authController.checkLogin());
+router.get('/sys/auth/logout', controllers.authController.logout());
 //注册
-router.get('/sys/register/active', controllers.userController.registerActive());
-router.get('/sys/register/result', controllers.userController.registerResult());
-router.post('/sys/register', controllers.userController.register());
+router.get('/sys/user/register/active', controllers.userController.registerActive());
+router.get('/sys/user/register/result', controllers.userController.registerResult());
+router.post('/sys/user/register', controllers.userController.register());
 
 
 module.exports = router;
