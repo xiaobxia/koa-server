@@ -18,6 +18,7 @@ router.get('/sys/auth/logout', controllers.authController.logout());
 router.get('/sys/user/register/active', controllers.userController.registerActive());
 router.get('/sys/user/register/result', controllers.userController.registerResult());
 router.post('/sys/user/register', controllers.userController.register());
+router.get('/sys/user/sendActiveEmail', controllers.userController.sendActiveEmail());
 
 
 module.exports = router;

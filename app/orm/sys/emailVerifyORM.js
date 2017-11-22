@@ -47,4 +47,12 @@ module.exports = class EmailVerifyORM extends BaseORM {
       }
     });
   }
+
+  getRecordByUserName(userName) {
+    return this.select({
+      where: {
+        userName,
+      }
+    });
+  }
 };

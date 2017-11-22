@@ -1,6 +1,11 @@
 const BaseController = require('../baseController');
 
 module.exports = class AuthController extends BaseController {
+  /**
+   * POST
+   * account
+   * password
+   */
   login() {
     return async (ctx) => {
       const query = ctx.request.body;
@@ -32,6 +37,9 @@ module.exports = class AuthController extends BaseController {
     };
   }
 
+  /**
+   * GET
+   */
   checkLogin() {
     return async (ctx) => {
       let userInfo = this.getSessionUser(ctx.session);
@@ -43,6 +51,9 @@ module.exports = class AuthController extends BaseController {
     }
   }
 
+  /**
+   * GET
+   */
   logout() {
     return async (ctx) => {
       const userInfoRaw = this.getSessionUser(ctx.session);
